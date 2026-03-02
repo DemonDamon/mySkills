@@ -4,6 +4,14 @@ Agent skills collection for Cursor / Claude Code.
 
 ## Skills
 
+### [dev-workflow-pipeline](dev-workflow-pipeline/)
+
+AgenticX 开发工作流 pipeline：将 6 个命令编排为 **研究 → 实现 → 提交 → 审查 → 修复闭环 → 知识沉淀**。每一步的输出是下一步的输入，支持状态检测与中断恢复。
+
+**适用场景**：研究、代码生成、提交、审查或知识沉淀；不确定 pipeline 下一步该做什么时触发。
+
+**命令速查**：`/codedeepresearch` → `/codegen` → `/commit` → `/codeview` → `/update-conclusion`；中断恢复用 `/codegen-proceed`。
+
 ### [tech-blog-generator](tech-blog-generator/)
 
 基于种子信息（关键词、URL、GitHub 仓库等）进行网络检索与资料爬取，生成图文并茂的中文技术博客。包含信息搜集、图片智能处理（自动过滤+闭环生图）、三轮写作（大纲→初稿→自评修正）。
