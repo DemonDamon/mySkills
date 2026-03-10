@@ -1,6 +1,6 @@
 ---
 name: github-hunter
-description: 深度分析GitHub Trending热门项目，自动截图、运行代码、落盘保存；当用户需要挖掘热门项目、体验代码效果、准备技术分享时使用
+description: 深度分析GitHub Trending热门项目，生成精美日报和博客文章；当用户需要发现热门项目、分析技术趋势、准备技术分享时使用
 dependency:
   python:
     - playwright>=1.40.0
@@ -10,17 +10,31 @@ dependency:
     - "playwright install chromium"
 ---
 
-# AI项目猎手（深度分析版）
+# GitHub Trending 分析器（升级版）
 
 ## 任务目标
-- 本 Skill 用于：深度分析GitHub Trending热门项目，实现"截图、使用、落盘"的完整流程
-- 能力包含：爬取Trending页面、逐个打开仓库、截取页面、克隆代码、运行示例、保存所有数据
-- 触发条件：用户询问"分析GitHub Trending"、"体验热门项目代码"、"深度评测开源项目"等
+- 本 Skill 用于：深度分析GitHub Trending，生成专业日报和博客文章
+- 能力包含：爬取Trending、趋势分析、日报生成、页面截图、博客撰写
+- 触发条件：用户询问"分析GitHub Trending"、"生成日报"、"发现热门项目"等
 
 ## 核心价值
-🎯 **截图**：自动打开GitHub页面和Demo页面，截取全页面截图  
-🚀 **使用**：克隆仓库到本地，安装依赖，运行示例代码  
-💾 **落盘**：保存所有截图、代码输出、分析结果到磁盘  
+🎯 **趋势分析**：自动识别热点主题、技术栈、公司分布、大佬项目  
+📊 **日报生成**：表格格式、一句话总结、趋势判断、洞察输出  
+📸 **真实截图**：使用Playwright截取真实GitHub页面，不使用AI生成  
+📝 **博客撰写**：Markdown格式，可发布到各大平台  
+
+## 快速开始
+**一句话生成日报**：
+```
+帮我分析今天GitHub Trending上的热门项目，生成一个日报
+```
+
+**一句话生成图文博客**：
+```
+帮我深度分析今天GitHub Trending上的热门Python项目，生成一个图文并茂的博客
+```
+
+详细指南：见 [references/quickstart.md](references/quickstart.md)
 
 ## 前置准备
 - 依赖安装：
@@ -30,190 +44,239 @@ dependency:
   ```
 - 系统依赖：确保已安装git和chromium浏览器
 
-## 快速开始
-**一句话生成GitHub Trending博客**：
-```
-帮我分析今天GitHub Trending上的热门Python项目，生成一个图文并茂的博客介绍
-```
-
-**更多提问方式**：
-- 指定语言：`帮我分析今天GitHub Trending上的热门JavaScript项目，生成一个图文并茂的博客介绍`
-- 指定时间：`帮我分析本周GitHub Trending上的热门AI项目，生成一个图文并茂的博客介绍`
-- 深度分析：`帮我深度分析今天GitHub Trending上的热门项目，包括运行代码体验，生成一个图文并茂的博客介绍`
-
-详细指南：见 [references/quickstart.md](references/quickstart.md)
-
 ## 操作步骤
-- 标准流程（5步走）：
-  
-  **步骤1: 爬取GitHub Trending**
-  - 调用 `scripts/deep_analyze.py --scrape --limit 3`
-  - 自动打开 https://github.com/trending
-  - 提取热门仓库列表（名称、描述、Stars、Forks等）
-  - 支持编程语言过滤：`--language python`
-  - 支持时间范围过滤：`--since daily/weekly/monthly`
-  
-  **步骤2: 深度分析单个仓库**
-  - 对每个仓库执行完整分析流程：
-    - 📸 打开GitHub页面 → 截图全页面
-    - 📋 提取README、技术栈、元数据
-    - 🔗 如果有Demo链接 → 打开并截图
-    - 📥 克隆仓库到本地
-  
-  **步骤3: 运行代码体验**
-  - 智能检测编程语言（Python/JavaScript/Go/Rust）
-  - 自动安装依赖（pip/npm/go mod/cargo）
-  - 查找示例代码（examples/、demo/、tests/目录）
-  - 运行示例并记录输出
-  - ⚠️ 需要添加 `--run-code` 参数
-  
-  **步骤4: 数据落盘保存**
-  - 为每个仓库创建独立目录：`output/<repo-name>/`
-  - 保存内容：
-    - `github-page.png` - GitHub页面截图
-    - `demo-page.png` - Demo页面截图（如果有）
-    - `analysis.json` - 完整分析结果
-    - `code-run-result.json` - 代码运行结果（如果运行了）
-  - 保存总览：`output/summary.json`
-  
-  **步骤5: 生成分析报告**
-  - 智能体基于分析结果撰写专业评测
-  - 包含技术架构、代码体验、生产建议
-  - 引用实际截图和运行输出
 
-- 简化流程（仅截图，不运行代码）：
-  - 调用 `scripts/deep_analyze.py --scrape --limit 3 --output-dir ./output`
-  - 执行步骤1、2、4、5，跳过步骤3
-  - 适用于：快速浏览、准备素材
+### 标准流程（智能体自动执行）
 
-- 完整流程（含代码运行）：
-  - 调用 `scripts/deep_analyze.py --scrape --limit 3 --run-code --output-dir ./output`
-  - 执行全部5个步骤
-  - 适用于：深度评测、技术分享
+**步骤1：爬取GitHub Trending**
+- 智能体调用 `scripts/run_workflow.py --language python --since daily --limit 15`
+- 使用Playwright打开真实的GitHub Trending页面
+- 提取项目名称、描述、Stars、Forks、今日增长等数据
+- 支持编程语言过滤和时间范围选择
+
+**步骤2：分析趋势**
+- 自动识别热点主题（Agent、LLM、RAG等）
+- 统计编程语言分布
+- 识别公司/国家分布（中国、美国等）
+- 识别大佬项目（Karpathy等）
+- 生成趋势洞察和判断
+
+**步骤3：生成日报**
+- 生成Markdown格式的日报
+- 包含表格、一句话总结、趋势判断
+- 保存到 `output/daily_report.md`
+
+**步骤4：截取页面（可选）**
+- 使用Playwright打开真实的GitHub页面
+- 截取全页面PNG截图
+- 保存到 `output/<repo-name>/github-page.png`
+- ⚠️ 需要添加 `--capture` 参数
+
+**步骤5：生成详细博客（可选）**
+- 生成包含截图的详细博客文章
+- 包含项目简介、技术特点、推荐理由
+- 保存到 `output/detailed_blog.md`
+- ⚠️ 需要先执行步骤4
 
 ## 资源索引
-- 核心脚本：
-  - [scripts/deep_analyze.py](scripts/deep_analyze.py) （主脚本：协调整个流程）
-    - 参数：`--scrape`（爬取Trending）、`--repos-file`（从文件加载）、`--language`（语言过滤）、`--since`（时间范围）、`--limit`（数量限制）、`--run-code`（运行代码）
-  - [scripts/scrape_trending.py](scripts/scrape_trending.py) （爬取Trending页面）
-  - [scripts/capture_page.py](scripts/capture_page.py) （页面截图）
-  - [scripts/clone_and_run.py](scripts/clone_and_run.py) （克隆并运行代码）
-- 领域参考：
-  - [references/code-run-patterns.md](references/code-run-patterns.md) （何时读取：了解代码运行规则）
 
-## 数据输出结构
+### 核心脚本
+- **主工作流**：[scripts/run_workflow.py](scripts/run_workflow.py) （一键完成所有步骤）
+  - 参数：`--language`（语言过滤）、`--since`（时间范围）、`--limit`（数量）、`--capture`（截图）
+  
+- **功能模块**：
+  - [scripts/scrape_trending.py](scripts/scrape_trending.py) - 爬取Trending页面
+  - [scripts/analyze_trends.py](scripts/analyze_trends.py) - 趋势分析
+  - [scripts/generate_report.py](scripts/generate_report.py) - 日报/博客生成
+  - [scripts/capture_page.py](scripts/capture_page.py) - 页面截图
 
-### 单个仓库输出目录
-```
-output/
-├── owner-repo/              # 每个仓库一个目录
-│   ├── github-page.png      # GitHub页面全页面截图
-│   ├── demo-page.png        # Demo页面截图（如果有）
-│   ├── analysis.json        # 完整分析结果
-│   └── code-run-result.json # 代码运行结果（如果运行了）
-└── summary.json             # 所有仓库的总览
-```
-
-### analysis.json 格式
-```json
-{
-  "repo": {
-    "name": "owner/repo",
-    "url": "https://github.com/owner/repo",
-    "description": "...",
-    "language": "Python",
-    "stars": 12345,
-    "forks": 456
-  },
-  "screenshots": {
-    "github_page": "output/owner-repo/github-page.png",
-    "demo_page": "output/owner-repo/demo-page.png"
-  },
-  "code_run": {
-    "cloned": true,
-    "language": {"detected": true, "language": "Python"},
-    "dependencies_installed": true,
-    "examples_found": ["examples/demo.py"],
-    "examples_run": [...]
-  },
-  "output_dir": "output/owner-repo"
-}
-```
-
-## 注意事项
-- **代码运行需要时间**：克隆、安装、运行可能需要几分钟，建议先用 `--limit 1` 测试
-- **网络要求**：需要访问GitHub和可能的包管理器（PyPI、npm等）
-- **磁盘空间**：每个仓库约占用10-100MB（代码+依赖）
-- **安全考虑**：代码运行在隔离环境中，避免运行有风险的代码
-- **超时控制**：单个示例运行超时30秒，避免无限等待
-- **错误处理**：依赖安装失败或示例运行失败会记录错误，不影响其他仓库
+### 参考文档
+- [references/quickstart.md](references/quickstart.md) - 快速开始指南
+- [references/blog-generation-guide.md](references/blog-generation-guide.md) - 博客生成指南
+- [references/code-run-patterns.md](references/code-run-patterns.md) - 代码运行规则
 
 ## 使用示例
 
-### 示例1：快速浏览GitHub Trending（仅截图）
-- 功能说明：爬取今日Trending，截图保存，不运行代码
-- 执行方式：简化流程
-- 命令：
-  ```bash
-  python scripts/deep_analyze.py --scrape --since daily --limit 5 --output-dir ./output
-  ```
-- 输出：每个仓库的GitHub页面截图 + 分析结果
+### 示例1：生成日报（推荐）
+```
+帮我分析今天GitHub Trending上的热门项目，生成一个日报
+```
 
-### 示例2：深度分析Python项目（含代码运行）
-- 功能说明：爬取Python Trending，深度分析并运行示例代码
-- 执行方式：完整流程
-- 命令：
-  ```bash
-  python scripts/deep_analyze.py --scrape --language python --since weekly --limit 3 --run-code --output-dir ./output
-  ```
-- 输出：GitHub截图 + 代码运行输出 + 完整分析结果
+**智能体执行**：
+```bash
+python scripts/run_workflow.py --since daily --limit 15 --output-dir ./output
+```
 
-### 示例3：从已有仓库列表分析
-- 功能说明：分析指定的仓库列表（不爬取Trending）
-- 执行方式：完整流程
-- 命令：
-  ```bash
-  python scripts/deep_analyze.py --repos-file trending-repos.json --run-code --output-dir ./output
-  ```
-- 输入：`trending-repos.json`（仓库列表JSON文件）
-- 输出：所有仓库的完整分析结果
+**输出**：
+- `output/trending.json` - 原始数据
+- `output/trends.json` - 趋势分析
+- `output/daily_report.md` - 日报文件
 
-### 示例4：仅截图指定URL
-- 功能说明：对单个仓库URL进行截图
-- 执行方式：独立截图
-- 命令：
-  ```bash
-  python scripts/capture_page.py --url https://github.com/owner/repo --output repo-screenshot.png
-  ```
-- 输出：`repo-screenshot.png`
+**日报格式**：
+```markdown
+# 🔥 GitHub Trending 日报 — 2026.03.10
 
-### 示例5：仅运行指定仓库代码
-- 功能说明：克隆并运行指定仓库的示例代码
-- 执行方式：独立运行
-- 命令：
-  ```bash
-  python scripts/clone_and_run.py --repo https://github.com/owner/repo --output run-result.json
-  ```
-- 输出：`run-result.json`（包含代码运行输出）
+## 🏆 全站热榜 TOP 15
 
-### 示例6：生成图文并茂的博客文章（智能体主导）
-- 功能说明：基于深度分析结果，生成Markdown格式的博客文章
-- 执行方式：智能体分析→撰写文章
-- 提问示例：
-  - "帮我分析今天GitHub Trending上的热门Python项目，生成一个图文并茂的博客介绍"
-  - "帮我分析本周GitHub Trending上的热门AI项目，生成一个图文并茂的博客文章"
-- 智能体会自动：
-  1. 调用 `deep_analyze.py` 分析项目（截图、运行代码）
-  2. 读取 `summary.json` 和各个仓库的 `analysis.json`
-  3. 生成包含图片的Markdown文章
-  4. 插入GitHub页面截图和代码运行结果
-- 输出：完整的Markdown博客文章（可发布到GitHub Pages、个人博客、技术社区）
+| # | 项目 | 一句话 | Stars今日 |
+|---|------|--------|----------|
+| 1 | pbakaus/impeccable | AI设计语言框架，让AI更懂设计。JS | ⭐932 |
+| 2 | msitarzewski/agency-agents | 完整AI Agent Agency，各有专精 | ⭐876 |
+...
+
+## 📊 今日趋势判断
+
+- 🔥 **Agent爆发** — 8个项目（53%）都在做Agent相关
+- 🇨🇳 **中国力量崛起** — 5个项目上榜，阿里、字节等大厂集体发力
+- ⭐ **大佬效应** — Karpathy出品：karpathy/nanochat
+```
+
+### 示例2：生成图文博客
+```
+帮我深度分析今天GitHub Trending上的热门Python项目，生成一个图文并茂的博客
+```
+
+**智能体执行**：
+```bash
+python scripts/run_workflow.py --language python --since daily --limit 10 --capture --output-dir ./output
+```
+
+**输出**：
+- `output/daily_report.md` - 日报
+- `output/detailed_blog.md` - 详细博客
+- `output/<repo-name>/github-page.png` - 真实截图
+
+**博客格式**：
+```markdown
+# GitHub Trending 热门项目推荐 — 2026年03月10日
+
+## 1. pbakaus/impeccable ⭐3,409
+
+![GitHub页面](output/pbakaus-impeccable/github-page.png)
+
+**项目简介**：AI设计语言框架...
+
+**技术特点**：
+- 🎨 设计语言框架
+- 💡 提升AI输出设计感
+- 📐 支持多种设计模式
+
+**推荐理由**：如果你想让AI生成的UI更有设计感...
+```
+
+### 示例3：指定编程语言
+```
+帮我分析本周GitHub Trending上的热门JavaScript项目
+```
+
+**智能体执行**：
+```bash
+python scripts/run_workflow.py --language javascript --since weekly --limit 15
+```
+
+### 示例4：只爬取数据
+```
+帮我爬取今天GitHub Trending上的热门项目数据
+```
+
+**智能体执行**：
+```bash
+python scripts/scrape_trending.py --since daily --limit 20 --output trending.json
+```
+
+## 输出文件说明
+
+### 数据文件
+- `trending.json` - 原始Trending数据（JSON格式）
+- `trends.json` - 趋势分析结果（JSON格式）
+
+### 报告文件
+- `daily_report.md` - 日报（表格格式，适合快速浏览）
+- `detailed_blog.md` - 详细博客（含截图，适合发布）
+
+### 截图文件
+- `<repo-name>/github-page.png` - 真实的GitHub页面截图（PNG格式）
+- ⚠️ **不使用AI生成图片**，全部来自真实GitHub页面
+
+## 核心功能详解
+
+### 1. 趋势分析
+自动识别：
+- 🔥 热点主题（Agent、LLM、RAG、AI安全等）
+- 💻 编程语言分布
+- 🌍 公司/国家分布
+- ⭐ 大佬项目
+- 📊 Stars增长趋势
+
+### 2. 一句话总结
+智能生成项目的一句话描述：
+- 识别项目类型（Agent、框架、工具、API等）
+- 提取核心特点
+- 简洁精准表达
+
+### 3. 趋势洞察
+自动生成专业洞察：
+- "Agent爆发 — 超过50%项目都在做Agent"
+- "中国力量崛起 — 阿里、字节集体上榜"
+- "大佬效应 — Karpathy出品即标杆"
+- "安全成刚需 — LLM测试已成行业共识"
+
+### 4. 真实截图
+使用Playwright截取真实页面：
+- ✅ 打开真实的GitHub URL
+- ✅ 等待页面完全加载
+- ✅ 截取全页面PNG截图
+- ❌ 不使用AI生成图片
+- ❌ 不使用假的HTML模板
+
+## 注意事项
+
+### 网络访问
+- 需要访问GitHub.com
+- 如无法访问，可使用演示模式（`demo_workflow.py`）
+
+### 截图耗时
+- 每个截图需要2-3秒
+- 建议限制数量（前5-10个项目）
+- 使用 `--limit 5 --capture` 参数
+
+### 数据准确性
+- 所有数据来自真实的GitHub页面
+- Stars数、Forks数、今日增长都是实时数据
+- 不使用模拟数据或AI生成
 
 ## 工作流程对比
 
-| 流程类型 | 命令参数 | 执行步骤 | 耗时 | 适用场景 |
-|---------|---------|---------|------|---------|
-| **简化流程** | 默认（无--run-code） | 爬取→截图→保存 | 1-2分钟 | 快速浏览、准备素材 |
-| **完整流程** | 添加 `--run-code` | 爬取→截图→克隆→运行→保存 | 5-10分钟 | 深度评测、技术分享 |
-| **单仓库分析** | `--repos-file` | 从文件加载→深度分析 | 视仓库大小而定 | 分析特定项目 |
-| **博客生成** | 智能体自动调用 | 分析→截图→撰写→生成 | 5-15分钟 | 生成图文并茂的博客文章 |
+| 流程类型 | 命令参数 | 执行步骤 | 耗时 | 输出 |
+|---------|---------|---------|------|------|
+| **快速日报** | 默认 | 爬取→分析→日报 | 10-20秒 | daily_report.md |
+| **完整流程** | `--capture` | 爬取→分析→截图→博客 | 1-2分钟 | 日报+博客+截图 |
+| **指定语言** | `--language python` | 爬取指定语言项目 | 10-20秒 | daily_report.md |
+| **本周热门** | `--since weekly` | 爬取本周Trending | 10-20秒 | daily_report.md |
+
+## 与openclaw对比
+
+| 功能 | github-hunter | openclaw |
+|------|--------------|----------|
+| 爬取数据 | ✅ Playwright真实爬取 | ✅ |
+| 趋势分析 | ✅ 自动识别热点主题 | ✅ |
+| 一句话总结 | ✅ 智能生成 | ✅ |
+| 日报生成 | ✅ Markdown格式 | ✅ |
+| 页面截图 | ✅ 真实PNG截图 | ❓ |
+| 详细博客 | ✅ 含截图引用 | ❓ |
+| 代码运行 | ⚠️ 支持但需时间 | ❓ |
+
+**优势**：
+- ✅ 使用真实截图，不AI生成
+- ✅ 完整的数据落盘（JSON + Markdown）
+- ✅ 可生成详细博客文章
+- ✅ 开源透明，可自定义
+
+## 快速开始
+
+只需一句话：
+```
+帮我分析今天GitHub Trending上的热门项目，生成一个日报
+```
+
+就这么简单！🎉
