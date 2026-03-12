@@ -11,8 +11,14 @@
 
 import argparse
 import asyncio
-from playwright.async_api import async_playwright
+import sys
 from pathlib import Path
+from playwright.async_api import async_playwright
+
+# 自动设置路径：将技能根目录添加到 sys.path
+skill_root = Path(__file__).parent.parent
+if str(skill_root) not in sys.path:
+    sys.path.insert(0, str(skill_root))
 
 
 async def capture_screenshot(

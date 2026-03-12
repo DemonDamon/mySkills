@@ -10,8 +10,10 @@ import sys
 from pathlib import Path
 from datetime import datetime
 
-# 添加父目录到路径
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# 自动设置路径：将技能根目录添加到 sys.path
+skill_root = Path(__file__).parent.parent
+if str(skill_root) not in sys.path:
+    sys.path.insert(0, str(skill_root))
 
 from scripts.analyze_trends import analyze_trends, print_analysis
 from scripts.generate_report import generate_daily_report, generate_detailed_blog

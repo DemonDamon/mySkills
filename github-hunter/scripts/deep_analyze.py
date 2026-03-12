@@ -18,8 +18,15 @@ import argparse
 import asyncio
 import json
 import os
+import sys
 from pathlib import Path
 from datetime import datetime
+
+# 自动设置路径：将技能根目录添加到 sys.path
+skill_root = Path(__file__).parent.parent
+if str(skill_root) not in sys.path:
+    sys.path.insert(0, str(skill_root))
+
 from scripts.scrape_trending import scrape_github_trending
 from scripts.capture_page import capture_screenshot
 from scripts.clone_and_run import clone_and_run

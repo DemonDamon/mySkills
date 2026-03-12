@@ -9,8 +9,14 @@ GitHub Trending日报生成器
 """
 
 import json
+import sys
 from datetime import datetime
 from pathlib import Path
+
+# 自动设置路径：将技能根目录添加到 sys.path
+skill_root = Path(__file__).parent.parent
+if str(skill_root) not in sys.path:
+    sys.path.insert(0, str(skill_root))
 
 
 def generate_one_liner(repo: dict) -> str:

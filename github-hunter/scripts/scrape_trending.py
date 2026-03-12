@@ -11,8 +11,15 @@
 import argparse
 import json
 import asyncio
+import sys
+from pathlib import Path
 from playwright.async_api import async_playwright
 from datetime import datetime
+
+# 自动设置路径：将技能根目录添加到 sys.path
+skill_root = Path(__file__).parent.parent
+if str(skill_root) not in sys.path:
+    sys.path.insert(0, str(skill_root))
 
 
 async def scrape_github_trending(language: str = "", since: str = "daily", limit: int = 10):

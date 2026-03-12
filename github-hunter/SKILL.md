@@ -24,14 +24,53 @@ dependency:
 📝 **博客撰写**：Markdown格式，可发布到各大平台  
 
 ## 快速开始
-**一句话生成日报**：
+
+### 🚀 一键启动（3种方式）
+
+**方式1: 使用根目录入口（推荐）**
+```bash
+cd github-hunter
+python github-hunter.py --since daily --limit 15
+```
+
+**方式2: 使用 Bash wrapper**
+```bash
+cd github-hunter
+./run.sh --since daily --limit 15
+```
+
+**方式3: 原方式（依然支持）**
+```bash
+cd github-hunter
+PYTHONPATH=. python scripts/run_workflow.py --since daily --limit 15
+```
+
+### 📋 一句话生成日报
 ```
 帮我分析今天GitHub Trending上的热门项目，生成一个日报
 ```
 
-**一句话生成图文博客**：
+### 🖼️ 一句话生成图文博客
 ```
 帮我深度分析今天GitHub Trending上的热门Python项目，生成一个图文并茂的博客
+```
+
+### 🔧 依赖检查与安装
+```bash
+# 检查依赖
+python check_deps.py
+
+# 自动安装缺失的依赖
+python check_deps.py --install
+```
+
+### 📦 技能安装到 Claude Code
+```bash
+# 安装（创建符号链接到 ~/.claude/skills/）
+./install.sh
+
+# 预览安装（不实际修改）
+./install.sh --dry-run
 ```
 
 详细指南：见 [references/quickstart.md](references/quickstart.md)
@@ -39,8 +78,12 @@ dependency:
 ## 前置准备
 - 依赖安装：
   ```bash
+  # 方式1: 手动安装
   pip install playwright gitpython
   playwright install chromium
+
+  # 方式2: 使用自动检查脚本（推荐）
+  python check_deps.py --install
   ```
 - 系统依赖：确保已安装git和chromium浏览器
 
@@ -280,3 +323,155 @@ python scripts/scrape_trending.py --since daily --limit 20 --output trending.jso
 ```
 
 就这么简单！🎉
+
+---
+
+## 故障排除
+
+### 问题1: ModuleNotFoundError: No module named 'scripts'
+
+**错误信息:**
+```
+ModuleNotFoundError: No module named 'scripts'
+```
+
+**原因:** Python 无法找到 `scripts` 模块
+
+**解决方案:**
+
+1. ✅ **使用新的入口脚本（推荐）**
+   ```bash
+   python github-hunter.py --since daily --limit 15
+   ```
+
+2. ✅ **使用 Bash wrapper**
+   ```bash
+   ./run.sh --since daily --limit 15
+   ```
+
+3. ✅ **手动设置 PYTHONPATH**
+   ```bash
+   PYTHONPATH=. python scripts/run_workflow.py --since daily --limit 15
+   ```
+
+---
+
+### 问题2: ImportError: No module named 'playwright'
+
+**错误信息:**
+```
+ImportError: No module named 'playwright'
+```
+
+**解决方案:**
+
+```bash
+# 使用依赖检查脚本（推荐）
+python check_deps.py --install
+
+# 或手动安装
+pip install playwright gitpython
+playwright install chromium
+```
+
+---
+
+### 问题3: Skill 工具无法识别 github-hunter
+
+**错误信息:**
+```
+Unknown skill: github-hunter
+```
+
+**解决方案:**
+
+1. 检查技能是否在正确的目录:
+   ```bash
+   ls -la ~/.claude/skills/
+   ```
+
+2. 使用安装脚本创建符号链接:
+   ```bash
+   ./install.sh
+   ```
+
+3. 重启 Claude Code
+
+---
+
+### 问题4: Playwright 浏览器启动失败
+
+**错误信息:**
+```
+Error: Chromium revision is not downloaded
+```
+
+**解决方案:**
+
+```bash
+# 安装 Playwright 浏览器
+playwright install chromium
+
+# 或使用依赖检查脚本
+python check_deps.py --install
+```
+
+---
+
+### 问题5: 网络超时或无法访问 GitHub
+
+**错误信息:**
+```
+TimeoutError: Timeout 30000ms exceeded
+```
+
+**解决方案:**
+
+1. 检查网络连接
+2. 尝试使用演示模式:
+   ```bash
+   python scripts/demo_workflow.py
+   ```
+
+---
+
+## 目录结构说明
+
+```
+github-hunter/
+├── SKILL.md                    # 技能定义（本文件）
+├── github-hunter.py            ✨ 新增: 根目录入口（推荐使用）
+├── run.sh                       ✨ 新增: Bash wrapper
+├── check_deps.py               ✨ 新增: 依赖检查脚本
+├── install.sh                   ✨ 新增: 技能安装脚本
+├── scripts/                     # 功能脚本目录
+│   ├── __init__.py             ✨ 新增: Python 包标识
+│   ├── run_workflow.py          # 主工作流
+│   ├── scrape_trending.py       # 爬取 Trending
+│   ├── analyze_trends.py        # 趋势分析
+│   ├── generate_report.py       # 报告生成
+│   ├── capture_page.py          # 页面截图
+│   └── [其他 12+ 个脚本...]
+├── references/                  # 参考文档
+├── assets/                      # 静态资源
+└── output/                      # 运行时生成（日报、截图等）
+```
+
+---
+
+## 验证安装
+
+运行以下命令验证一切正常:
+
+```bash
+# 1. 检查依赖
+python check_deps.py
+
+# 2. 测试运行（快速模式）
+python github-hunter.py --since daily --limit 3
+
+# 3. 查看输出
+cat output/daily_report.md
+```
+
+如果都正常，恭喜！github-hunter 已准备就绪！🚀
